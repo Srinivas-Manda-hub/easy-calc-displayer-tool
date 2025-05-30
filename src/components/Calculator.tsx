@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Calculator as CalculatorIcon, Delete, RotateCcw } from 'lucide-react';
+import { Calculator as CalculatorIcon, Delete, RotateCcw, X } from 'lucide-react';
 
 const Calculator = () => {
   const [display, setDisplay] = useState('0');
@@ -85,6 +84,10 @@ const Calculator = () => {
     }
   };
 
+  const handleProjectLink = () => {
+    window.open(window.location.href, '_blank');
+  };
+
   const Button = ({ 
     children, 
     onClick, 
@@ -135,6 +138,17 @@ const Calculator = () => {
               {display}
             </div>
           </div>
+        </div>
+
+        {/* Centered X Mark Link */}
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={handleProjectLink}
+            className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
+            title="View Project Output"
+          >
+            <X size={24} />
+          </button>
         </div>
 
         {/* Buttons */}
