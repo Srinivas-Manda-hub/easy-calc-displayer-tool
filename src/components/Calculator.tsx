@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Calculator as CalculatorIcon, Delete, RotateCcw, X } from 'lucide-react';
+import { Calculator as CalculatorIcon, Delete, RotateCcw } from 'lucide-react';
 
 const Calculator = () => {
   const [display, setDisplay] = useState('0');
@@ -85,19 +85,6 @@ const Calculator = () => {
     }
   };
 
-  const handleInternshipLink = () => {
-    const projectUrl = window.location.href;
-    const internshipMessage = `Check out my Calculator project built with React and Tailwind CSS: ${projectUrl}`;
-    
-    // Copy to clipboard
-    navigator.clipboard.writeText(internshipMessage).then(() => {
-      alert('Internship submission link copied to clipboard!');
-    }).catch(() => {
-      // Fallback: open in new tab
-      window.open(projectUrl, '_blank');
-    });
-  };
-
   const Button = ({ 
     children, 
     onClick, 
@@ -107,7 +94,7 @@ const Calculator = () => {
     children: React.ReactNode; 
     onClick: () => void; 
     className?: string; 
-    variant?: 'default' | 'operator' | 'equals' | 'clear' | 'number' | 'link';
+    variant?: 'default' | 'operator' | 'equals' | 'clear' | 'number';
   }) => {
     const baseClasses = "h-16 rounded-2xl font-semibold text-lg transition-all duration-200 active:scale-95 hover:shadow-lg";
     
@@ -116,8 +103,7 @@ const Calculator = () => {
       number: "bg-gray-800 hover:bg-gray-700 text-white shadow-md hover:shadow-xl",
       operator: "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md hover:shadow-xl",
       equals: "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-xl",
-      clear: "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-md hover:shadow-xl",
-      link: "bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-md hover:shadow-xl"
+      clear: "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-md hover:shadow-xl"
     };
 
     return (
@@ -154,12 +140,9 @@ const Calculator = () => {
         {/* Buttons */}
         <div className="grid grid-cols-4 gap-3">
           {/* Row 1 */}
-          <Button onClick={clear} variant="clear">
-            <RotateCcw size={16} className="mr-1" />
+          <Button onClick={clear} variant="clear" className="col-span-2">
+            <RotateCcw size={20} className="mr-2" />
             Clear
-          </Button>
-          <Button onClick={handleInternshipLink} variant="link" title="Copy internship submission link">
-            <X size={20} />
           </Button>
           <Button onClick={deleteLastDigit} variant="default">
             <Delete size={20} />
