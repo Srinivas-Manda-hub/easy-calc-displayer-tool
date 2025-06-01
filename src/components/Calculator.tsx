@@ -1,178 +1,184 @@
 
 import React, { useState } from 'react';
-import { Calculator as CalculatorIcon, Delete, RotateCcw } from 'lucide-react';
 
 const Calculator = () => {
-  const [display, setDisplay] = useState('0');
-  const [previousValue, setPreviousValue] = useState<number | null>(null);
-  const [operation, setOperation] = useState<string | null>(null);
-  const [waitingForNewValue, setWaitingForNewValue] = useState(false);
+  const [num1, setNum1] = useState('');
+  const [num2, setNum2] = useState('');
+  const [operation, setOperation] = useState('add');
+  const [result, setResult] = useState('');
 
-  const inputNumber = (num: string) => {
-    if (waitingForNewValue) {
-      setDisplay(num);
-      setWaitingForNewValue(false);
-    } else {
-      setDisplay(display === '0' ? num : display + num);
-    }
-  };
-
-  const inputDecimal = () => {
-    if (waitingForNewValue) {
-      setDisplay('0.');
-      setWaitingForNewValue(false);
-    } else if (display.indexOf('.') === -1) {
-      setDisplay(display + '.');
-    }
-  };
-
-  const clear = () => {
-    setDisplay('0');
-    setPreviousValue(null);
-    setOperation(null);
-    setWaitingForNewValue(false);
-  };
-
-  const deleteLastDigit = () => {
-    if (display.length > 1) {
-      setDisplay(display.slice(0, -1));
-    } else {
-      setDisplay('0');
-    }
-  };
-
-  const performOperation = (nextOperation: string) => {
-    const inputValue = parseFloat(display);
-
-    if (previousValue === null) {
-      setPreviousValue(inputValue);
-    } else if (operation) {
-      const currentValue = previousValue || 0;
-      const newValue = calculate(currentValue, inputValue, operation);
-
-      setDisplay(String(newValue));
-      setPreviousValue(newValue);
-    }
-
-    setWaitingForNewValue(true);
-    setOperation(nextOperation);
-  };
-
-  const calculate = (firstValue: number, secondValue: number, operation: string): number => {
-    switch (operation) {
-      case '+':
-        return firstValue + secondValue;
-      case '-':
-        return firstValue - secondValue;
-      case '×':
-        return firstValue * secondValue;
-      case '÷':
-        return secondValue !== 0 ? firstValue / secondValue : 0;
-      default:
-        return secondValue;
-    }
-  };
-
-  const handleEquals = () => {
-    const inputValue = parseFloat(display);
-
-    if (previousValue !== null && operation) {
-      const newValue = calculate(previousValue, inputValue, operation);
-      setDisplay(String(newValue));
-      setPreviousValue(null);
-      setOperation(null);
-      setWaitingForNewValue(true);
-    }
-  };
-
-  const Button = ({ 
-    children, 
-    onClick, 
-    className = '', 
-    variant = 'default' 
-  }: { 
-    children: React.ReactNode; 
-    onClick: () => void; 
-    className?: string; 
-    variant?: 'default' | 'operator' | 'equals' | 'clear' | 'number';
-  }) => {
-    const baseClasses = "h-16 rounded-2xl font-semibold text-lg transition-all duration-200 active:scale-95 hover:shadow-lg";
+  const handleCalculate = () => {
+    const n1 = parseFloat(num1);
+    const n2 = parseFloat(num2);
     
-    const variantClasses = {
-      default: "bg-gray-700 hover:bg-gray-600 text-white",
-      number: "bg-gray-800 hover:bg-gray-700 text-white shadow-md hover:shadow-xl",
-      operator: "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md hover:shadow-xl",
-      equals: "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-xl",
-      clear: "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-md hover:shadow-xl"
-    };
+    if (isNaN(n1) || isNaN(n2)) {
+      setResult('Please enter valid numbers.');
+      return;
+    }
 
-    return (
-      <button
-        className={`${baseClasses} ${variantClasses[variant]} ${className}`}
-        onClick={onClick}
-      >
-        {children}
-      </button>
-    );
+    let calculatedResult = 0;
+    switch (operation) {
+      case 'add':
+        calculatedResult = n1 + n2;
+        break;
+      case 'subtract':
+        calculatedResult = n1 - n2;
+        break;
+      case 'multiply':
+        calculatedResult = n1 * n2;
+        break;
+      case 'divide':
+        calculatedResult = n2 !== 0 ? n1 / n2 : 0;
+        if (n2 === 0) {
+          setResult('Cannot divide by zero');
+          return;
+        }
+        break;
+      default:
+        calculatedResult = 0;
+    }
+    
+    setResult(`Result: ${calculatedResult}`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
-      <div className="bg-gray-900 rounded-3xl shadow-2xl p-6 w-full max-w-sm border border-gray-700">
-        {/* Header */}
-        <div className="flex items-center justify-center mb-6">
-          <CalculatorIcon className="text-blue-400 mr-2" size={28} />
-          <h1 className="text-white text-xl font-bold">Calculator</h1>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: 'Arial, sans-serif',
+      padding: '20px'
+    }}>
+      <div style={{
+        background: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '20px',
+        padding: '40px',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        width: '100%',
+        maxWidth: '400px'
+      }}>
+        <h1 style={{
+          color: 'white',
+          textAlign: 'center',
+          marginBottom: '30px',
+          fontSize: '28px',
+          fontWeight: '300'
+        }}>
+          Simple Calculator
+        </h1>
+
+        <div style={{
+          display: 'flex',
+          gap: '15px',
+          marginBottom: '20px'
+        }}>
+          <input
+            type="number"
+            placeholder="Number 1"
+            value={num1}
+            onChange={(e) => setNum1(e.target.value)}
+            style={{
+              flex: 1,
+              padding: '15px',
+              borderRadius: '10px',
+              border: 'none',
+              background: 'rgba(255, 255, 255, 0.9)',
+              fontSize: '16px',
+              outline: 'none'
+            }}
+          />
+          <input
+            type="number"
+            placeholder="Number 2"
+            value={num2}
+            onChange={(e) => setNum2(e.target.value)}
+            style={{
+              flex: 1,
+              padding: '15px',
+              borderRadius: '10px',
+              border: 'none',
+              background: 'rgba(255, 255, 255, 0.9)',
+              fontSize: '16px',
+              outline: 'none'
+            }}
+          />
         </div>
 
-        {/* Display */}
-        <div className="bg-gray-800 rounded-2xl p-6 mb-6 border border-gray-700">
-          <div className="text-right">
-            <div className="text-gray-400 text-sm mb-1">
-              {previousValue !== null && operation ? `${previousValue} ${operation}` : ''}
-            </div>
-            <div className="text-white text-3xl font-light break-all">
-              {display}
-            </div>
-          </div>
+        <div style={{
+          marginBottom: '20px'
+        }}>
+          <select
+            value={operation}
+            onChange={(e) => setOperation(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '15px',
+              borderRadius: '10px',
+              border: 'none',
+              background: 'rgba(255, 255, 255, 0.2)',
+              color: 'white',
+              fontSize: '16px',
+              outline: 'none'
+            }}
+          >
+            <option value="add" style={{ color: 'black' }}>Addition (+)</option>
+            <option value="subtract" style={{ color: 'black' }}>Subtraction (-)</option>
+            <option value="multiply" style={{ color: 'black' }}>Multiplication (×)</option>
+            <option value="divide" style={{ color: 'black' }}>Division (÷)</option>
+          </select>
         </div>
 
-        {/* Buttons */}
-        <div className="grid grid-cols-4 gap-3">
-          {/* Row 1 */}
-          <Button onClick={clear} variant="clear" className="col-span-2">
-            <RotateCcw size={20} className="mr-2" />
-            Clear
-          </Button>
-          <Button onClick={deleteLastDigit} variant="default">
-            <Delete size={20} />
-          </Button>
-          <Button onClick={() => performOperation('÷')} variant="operator">
-            ÷
-          </Button>
+        <button
+          onClick={handleCalculate}
+          style={{
+            width: '100%',
+            padding: '15px',
+            borderRadius: '10px',
+            border: 'none',
+            background: 'rgba(255, 255, 255, 0.2)',
+            color: 'white',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            marginBottom: '20px',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+          }}
+        >
+          Calculate
+        </button>
 
-          {/* Row 2 */}
-          <Button onClick={() => inputNumber('7')} variant="number">7</Button>
-          <Button onClick={() => inputNumber('8')} variant="number">8</Button>
-          <Button onClick={() => inputNumber('9')} variant="number">9</Button>
-          <Button onClick={() => performOperation('×')} variant="operator">×</Button>
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '10px',
+          padding: '20px',
+          textAlign: 'center',
+          color: 'white',
+          fontSize: '18px',
+          minHeight: '60px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          {result || 'Result: Please enter valid numbers.'}
+        </div>
 
-          {/* Row 3 */}
-          <Button onClick={() => inputNumber('4')} variant="number">4</Button>
-          <Button onClick={() => inputNumber('5')} variant="number">5</Button>
-          <Button onClick={() => inputNumber('6')} variant="number">6</Button>
-          <Button onClick={() => performOperation('-')} variant="operator">-</Button>
-
-          {/* Row 4 */}
-          <Button onClick={() => inputNumber('1')} variant="number">1</Button>
-          <Button onClick={() => inputNumber('2')} variant="number">2</Button>
-          <Button onClick={() => inputNumber('3')} variant="number">3</Button>
-          <Button onClick={() => performOperation('+')} variant="operator">+</Button>
-
-          {/* Row 5 */}
-          <Button onClick={() => inputNumber('0')} variant="number" className="col-span-2">0</Button>
-          <Button onClick={inputDecimal} variant="number">.</Button>
-          <Button onClick={handleEquals} variant="equals">=</Button>
+        <div style={{
+          textAlign: 'center',
+          marginTop: '20px',
+          color: 'rgba(255, 255, 255, 0.7)',
+          fontSize: '14px'
+        }}>
+          By Project 2 Calculator
         </div>
       </div>
     </div>
